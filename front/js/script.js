@@ -1,4 +1,4 @@
-let dataSrc = 'http://localhost:3000/api/products';
+const dataSrc = 'http://localhost:3000/api/products';
 
 function itemTemplate(data) {
     // Recupération du conteneur de la section des items
@@ -47,7 +47,6 @@ function getAllItems() {
     fetch(dataSrc)
     .then( response => { return response.json() } )
     .then( resources => {
-        console.table(resources);
         for (let resource of resources) {
             itemTemplate(resource);
         }
