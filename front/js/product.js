@@ -1,7 +1,7 @@
 const dataSrc = 'http://localhost:3000/api/products';
 
-const currentUrl = new URL(window.location.href);
-const id = currentUrl.searchParams.get("id");
+let currentUrl = new URL(window.location.href);
+let itemID = currentUrl.searchParams.get("id");
 
 function productTemplate(itemData) {
     // Modification du titre de la page
@@ -54,7 +54,7 @@ function productTemplate(itemData) {
 }
 
 function fetchAProductData() {
-    fetch( dataSrc + '/' + id)
+    fetch( dataSrc + '/' + itemID)
     .then(response => {
         return response.json();
     })
@@ -65,5 +65,46 @@ function fetchAProductData() {
         alert(" Erreur : " + error );
     })
 }
-
 fetchAProductData();
+
+
+function addItemToCart() {
+    const addToCart = document.getElementById('addToCart');
+
+    addToCart.addEventListener('click', () => {
+
+        let colors = document.getElementById("colors");
+        let color = colors.options[colors.selectedIndex].text;
+
+        let quantity = document.getElementById("quantity").value;
+
+            
+        let cartItem = {
+            id: itemID,
+            color: color,
+            quantity: parseInt(quantity)
+        }
+
+        let localStorageDatas = JSON.parse(localStorage.getItem("localData"));
+
+        if(localStorageDatas) {
+            let isItemExist = localStorageDatas.find( (item) => item.id === cartItem.id && item.color === cartItem.color);
+            if(isItemExist) {
+                isItemExist.quantity = isItemExist.quantity + cartItem.quantity;
+                localStorage.setItem("localData", JSON.stringify(localStorageDatas));
+            } else {
+                localStorageDatas.push(cartItem);
+                localStorage.setItem("localData", JSON.stringify(localStorageDatas));
+            }
+
+        } else {
+            let localStorageDatas = [];
+            localStorageDatas.push(cartItem);
+            localStorage.setItem("localData", JSON.stringify(localStorageDatas));
+        }
+            
+    });
+    
+}
+addItemToCart();
+console.log(JSON.parse(localStorage.getItem("localData")));

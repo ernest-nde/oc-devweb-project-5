@@ -45,7 +45,9 @@ function itemTemplate(data) {
 
 function getAllItems() {
     fetch(dataSrc)
-    .then( response => { return response.json() } )
+    .then( response => { 
+        return response.json() 
+    } )
     .then( resources => {
         for (let resource of resources) {
             itemTemplate(resource);
