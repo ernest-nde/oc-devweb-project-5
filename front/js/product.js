@@ -51,6 +51,8 @@ function productTemplate(itemData) {
         contentColors.appendChild(contentColorsOption);
     }
     
+    addItemToCart(itemData);
+
 }
 
 function fetchAProductData() {
@@ -68,43 +70,54 @@ function fetchAProductData() {
 fetchAProductData();
 
 
-function addItemToCart() {
+function addItemToCart( item ) {
     const addToCart = document.getElementById('addToCart');
 
     addToCart.addEventListener('click', () => {
 
-        let colors = document.getElementById("colors");
-        let color = colors.options[colors.selectedIndex].text;
+        const colors = document.getElementById("colors");
+        const color = colors.options[colors.selectedIndex].text;
 
-        let quantity = document.getElementById("quantity").value;
+        const quantity = document.getElementById("quantity").value;
 
             
         let cartItem = {
             id: itemID,
+            name: item.name,
+            image: item.imageUrl,
+            alt: item.altTxt,
+            price: item.price,
             color: color,
             quantity: parseInt(quantity)
         }
 
         let localStorageDatas = JSON.parse(localStorage.getItem("localData"));
 
+        const confirmNotification = () => {
+            if (confirm("Nouvel Item ajouté au panier!\nAller vers le panier ?")) {
+                window.location.href = "./cart.html";
+            }
+        }
+
         if(localStorageDatas) {
             let isItemExist = localStorageDatas.find( (item) => item.id === cartItem.id && item.color === cartItem.color);
             if(isItemExist) {
                 isItemExist.quantity = isItemExist.quantity + cartItem.quantity;
                 localStorage.setItem("localData", JSON.stringify(localStorageDatas));
+                confirmNotification();
             } else {
                 localStorageDatas.push(cartItem);
                 localStorage.setItem("localData", JSON.stringify(localStorageDatas));
+                confirmNotification();
             }
 
         } else {
             let localStorageDatas = [];
             localStorageDatas.push(cartItem);
             localStorage.setItem("localData", JSON.stringify(localStorageDatas));
+            confirmNotification();
         }
             
     });
     
 }
-addItemToCart();
-console.log(JSON.parse(localStorage.getItem("localData")));
